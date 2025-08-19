@@ -1,0 +1,4 @@
+﻿FirstName,LastName,SamAccountName,OU,Group,Department,Title,Password
+Alice,Smith,asmith,Doctors,Doctors,Healthcare,Physician,Passw0rd!
+Ben,Jones,bjones,Nurses,Nurses,Healthcare,Registered Nurse,Passw0rd!
+Sam,Wu,swu,IT,IT,IT,Systems Administrator,Passw0rd!
