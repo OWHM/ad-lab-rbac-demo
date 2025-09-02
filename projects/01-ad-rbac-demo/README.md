@@ -1,184 +1,95 @@
-\# Active Directory RBAC Demo (One-Night Security Admin Project)
+# Active Directory RBAC Demo Lab
 
-
-
-\## Overview
-
-This project demonstrates how to set up a mini Active Directory (AD) environment, create Organizational Units (OUs), provision users, assign them to groups, and enforce Role-Based Access Control (RBAC) with shared folders.
-
-
-
-✅ Outcome: A working AD domain with RBAC, screenshots proving access enforcement, and automation via PowerShell.
-
-
+This lab simulates an Active Directory domain in a Windows Server VM.  
+It demonstrates **user provisioning, OU structure, security groups, and role-based access control (RBAC)** with full evidence via screenshots and PowerShell automation.  
 
 ---
 
-
-
-\## Steps Completed
-
-
-
-\### 1. Prep Environment
-
-\- Created a Windows Server 2019 VM in VirtualBox.
-
-\- Specs: 2 vCPU, 4GB RAM, 40GB Disk.
-
-\- Attached ISO from Microsoft Evaluation Center.
-
-
-
-📸 \*Screenshot 1: VirtualBox VM Settings (before install)\*
-
-
+## 🛠️ Tools & Environment
+- Windows Server 2019 (Desktop Experience) in VirtualBox  
+- Active Directory Domain Services (AD DS)  
+- PowerShell automation (`New-BulkADUsers.ps1`, `users.csv`)  
+- NTFS + SMB shares for role-based access control  
 
 ---
 
+## 🚀 Steps & Evidence
 
-
-\### 2. Promote to Domain Controller
-
-\- Installed \*\*Active Directory Domain Services (AD DS)\*\*.
-
-\- Promoted server to Domain Controller with domain: `uhlab.local`.
-
-
-
-📸 \*Screenshot 2: Server Manager → Add Roles Wizard\*  
-
-📸 \*Screenshot 3: Domain Promotion Wizard → Domain Name (`uhlab.local`)\*
-
-
+### 1. VM Setup & Roles
+Configured Windows Server in VirtualBox and added the AD DS role.  
+![VM settings](./evidence/01_vm_settings.png)  
+![Add roles](./evidence/02_add_roles.png)  
 
 ---
 
-
-
-\### 3. Create Organizational Units \& Groups
-
-\- Created OUs:
-
-&nbsp; - Healthcare\_Staff
-
-&nbsp;   - Doctors
-
-&nbsp;   - Nurses
-
-&nbsp;   - IT
-
-\- Created security groups: Doctors, Nurses, IT.
-
-
-
-📸 \*Screenshot 4: ADUC with OU structure visible\*  
-
-📸 \*Screenshot 5: ADUC showing Security Groups created\*
-
-
+### 2. Domain Controller Promotion
+Promoted the server to Domain Controller for `uhlab.local`.  
+![Domain promotion](./evidence/03_domain_promotion.png)  
 
 ---
 
-
-
-\### 4. Add Users
-
-\- Used \*\*PowerShell Bulk Import\*\* (`New-BulkADUsers.ps1`) with `users.csv`.  
-
-\- Example users:
-
-&nbsp; - Dr. Alice (Doctors)
-
-&nbsp; - Nurse Ben (Nurses)
-
-&nbsp; - IT Sam (IT)
-
-
-
-📸 \*Screenshot 6: PowerShell output of bulk user creation\*  
-
-📸 \*Screenshot 7: ADUC showing users in their OUs\*
-
-
+### 3. Organizational Units & Groups
+Created `Healthcare_Staff` OU with sub-OUs for Doctors, Nurses, and IT.  
+Provisioned security groups for each department.  
+![OU structure](./evidence/04_ou_structure.png)  
+![OU structure via PowerShell](./evidence/05_ou_structure_powershell.png)  
 
 ---
 
-
-
-\### 5. Apply RBAC with Shared Folders
-
-\- Created `C:\\Shares` with subfolders:
-
-&nbsp; - Doctors
-
-&nbsp; - Nurses
-
-&nbsp; - IT
-
-\- Applied NTFS permissions: each group has access to its folder, denied elsewhere.
-
-
-
-📸 \*Screenshot 8: Folder Properties → Security Tab showing group permissions\*
-
-
+### 4. Bulk User Provisioning
+Created test users (Dr. Alice, Nurse Ben, IT Sam) via PowerShell CSV import.  
+![Bulk user creation](./evidence/06_bulk_user_create.png)  
+![Users and groups via PowerShell](./evidence/07a_users_and_groups_powershell.png)  
+![Users in ADUC](./evidence/07b_users_in_aduc.png)  
 
 ---
 
+### 5. Role-Based Access Control (RBAC)
+Applied NTFS Modify rights per group to dedicated folders.  
+- Doctors → `C:\Shares\Doctors`  
+- Nurses → `C:\Shares\Nurses`  
+- IT → `C:\Shares\IT`  
 
-
-\### 6. Test Access
-
-\- Logged in as Dr. Alice → can access Doctors folder, denied Nurses folder.
-
-\- Logged in as Nurse Ben → can access Nurses folder, denied Doctors folder.
-
-
-
-📸 \*Screenshot 9: Dr. Alice opening Doctors folder successfully\*  
-
-📸 \*Screenshot 10: Dr. Alice denied from Nurses folder\*  
-
-📸 \*Screenshot 11: Nurse Ben denied from Doctors folder\*
-
-
+![Doctors folder permissions](./evidence/08a_ntfs_perms_doctors.png)  
+![Nurses folder permissions](./evidence/08b_ntfs_perms_nurses.png)  
+![IT folder permissions](./evidence/08c_ntfs_perms_it.png)  
+![Permissions via PowerShell](./evidence/08d_ntfs_perms_powershell.png)  
 
 ---
 
+### 6. Access Testing
+Confirmed access works only for proper groups.  
+- Dr. Alice → Doctors ✅, Nurses ❌  
+- Nurse Ben → Nurses ✅, Doctors ❌  
+- IT Sam → IT ✅  
 
-
-\### 7. Evidence
-
-All screenshots are saved in `/evidence/`.
-
-
-
----
-
-
-
-\## Automation Artifacts
-
-\- `users.csv` → bulk user list.
-
-\- `New-BulkADUsers.ps1` → PowerShell script for provisioning.
-
-
+![Access Doctors as Alice](./evidence/09_access_doctors_as_alice.png)  
+![Denied Nurses as Alice](./evidence/10_denied_nurses_as_alice.png)  
+![Denied Doctors as Ben](./evidence/11_denied_doctors_as_ben.png)  
+![Access IT as Sam](./evidence/12a_access_it_as_sam.png)  
+![Denied IT other folders](./evidence/12b_denied_it_other_folders.png)  
 
 ---
 
+### 7. Final Sanity Check
+Verified shares and group membership via PowerShell.  
+![Final sanity check](./evidence/13_final_sanity_check.png)  
 
+---
 
-\## Key Learnings
+## 📌 Reflection
+- Learned how to provision AD DS, OUs, groups, and users both via GUI and PowerShell.  
+- Solved a **real-world NTFS ownership issue** using `takeown`, `icacls`, and `Set-Acl`.  
+- Built repeatable automation with PowerShell for bulk provisioning.  
+- Discovered that by default, **users cannot log on locally to DCs**. Wrote a PowerShell script to adjust `SeInteractiveLogonRight` for lab-only testing.  
+- **Real-world note**: In production, users log on to domain-joined clients or member servers — never directly to DCs.  
 
-\- Setting up AD from scratch.
+---
 
-\- Creating OUs and enforcing group-based access.
-
-\- Automating user provisioning via PowerShell.
-
-\- Capturing and presenting security evidence.
-
+## 📂 Repo Contents
+- `users.csv` — test user list  
+- `New-BulkADUsers.ps1` — bulk provisioning script  
+- `Fix-LocalLogon.ps1` — lab-only script to allow test user login to DC  
+- `evidence/` — screenshots documenting the lab  
 
 
